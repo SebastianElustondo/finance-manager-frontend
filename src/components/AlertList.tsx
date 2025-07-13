@@ -15,9 +15,9 @@ export const AlertList: React.FC = () => {
     try {
       setLoading(true)
       setError(null)
-      
+
       const response = await apiClient.getAlerts()
-      
+
       if (response.success) {
         setAlerts(response.data || [])
       } else {
@@ -31,10 +31,15 @@ export const AlertList: React.FC = () => {
     }
   }
 
-  const handleCreateAlert = async (alertData: Omit<Alert, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'triggeredAt'>) => {
+  const handleCreateAlert = async (
+    alertData: Omit<
+      Alert,
+      'id' | 'userId' | 'createdAt' | 'updatedAt' | 'triggeredAt'
+    >
+  ) => {
     try {
       const response = await apiClient.createAlert(alertData)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAlerts()
@@ -50,7 +55,7 @@ export const AlertList: React.FC = () => {
   const handleUpdateAlert = async (id: string, updates: Partial<Alert>) => {
     try {
       const response = await apiClient.updateAlert(id, updates)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAlerts()
@@ -66,7 +71,7 @@ export const AlertList: React.FC = () => {
   const handleDeleteAlert = async (id: string) => {
     try {
       const response = await apiClient.deleteAlert(id)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAlerts()
@@ -91,7 +96,7 @@ export const AlertList: React.FC = () => {
     return (
       <div className="text-center py-4 text-red-600">
         <p>Error: {error}</p>
-        <button 
+        <button
           onClick={fetchAlerts}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
@@ -104,12 +109,12 @@ export const AlertList: React.FC = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Price Alerts</h2>
-      
+
       {alerts.length === 0 ? (
         <p className="text-gray-500">No alerts found.</p>
       ) : (
         <div className="grid gap-4">
-          {alerts.map((alert) => (
+          {alerts.map(alert => (
             <div key={alert.id} className="border rounded-lg p-4 shadow-sm">
               <div className="flex justify-between items-start">
                 <div>
@@ -118,9 +123,19 @@ export const AlertList: React.FC = () => {
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>Type: {alert.type}</p>
                     <p>Condition: {alert.condition}</p>
-                    <p>Status: {alert.isTriggered ? 'Triggered' : alert.isActive ? 'Active' : 'Inactive'}</p>
+                    <p>
+                      Status:{' '}
+                      {alert.isTriggered
+                        ? 'Triggered'
+                        : alert.isActive
+                          ? 'Active'
+                          : 'Inactive'}
+                    </p>
                     {alert.triggeredAt && (
-                      <p>Triggered at: {new Date(alert.triggeredAt).toLocaleString()}</p>
+                      <p>
+                        Triggered at:{' '}
+                        {new Date(alert.triggeredAt).toLocaleString()}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -128,8 +143,8 @@ export const AlertList: React.FC = () => {
                   <button
                     onClick={() => handleToggleAlert(alert.id, !alert.isActive)}
                     className={`px-3 py-1 rounded text-sm ${
-                      alert.isActive 
-                        ? 'bg-yellow-500 text-white hover:bg-yellow-600' 
+                      alert.isActive
+                        ? 'bg-yellow-500 text-white hover:bg-yellow-600'
                         : 'bg-green-500 text-white hover:bg-green-600'
                     }`}
                   >
@@ -147,16 +162,18 @@ export const AlertList: React.FC = () => {
           ))}
         </div>
       )}
-      
+
       <button
-        onClick={() => handleCreateAlert({
-          symbol: 'AAPL',
-          type: AlertType.PRICE_ABOVE,
-          condition: 200.00,
-          isActive: true,
-          isTriggered: false,
-          message: 'AAPL price alert: above $200'
-        })}
+        onClick={() =>
+          handleCreateAlert({
+            symbol: 'AAPL',
+            type: AlertType.PRICE_ABOVE,
+            condition: 200.0,
+            isActive: true,
+            isTriggered: false,
+            message: 'AAPL price alert: above $200',
+          })
+        }
         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Create Sample Alert
@@ -165,4 +182,4 @@ export const AlertList: React.FC = () => {
   )
 }
 
-export default AlertList 
+export default AlertList

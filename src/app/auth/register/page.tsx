@@ -52,33 +52,44 @@ export default function Register() {
         try {
           // Wait a moment for the session to be properly set
           await new Promise(resolve => setTimeout(resolve, 1000))
-          
+
           const portfolioName = `${username || email.split('@')[0]}'s Portfolio`
-          
+
           // Create default portfolio
           const portfolioResponse = await apiClient.createPortfolio({
             name: portfolioName,
             description: 'Your main investment portfolio',
             currency: 'USD',
-            isDefault: true
+            isDefault: true,
           })
 
           if (portfolioResponse.success) {
             // Portfolio created successfully, redirect to dashboard
-            router.push('/dashboard?message=Registration successful! Welcome to your Finance Manager.')
+            router.push(
+              '/dashboard?message=Registration successful! Welcome to your Finance Manager.'
+            )
           } else {
-            console.error('Failed to create default portfolio:', portfolioResponse.error)
+            console.error(
+              'Failed to create default portfolio:',
+              portfolioResponse.error
+            )
             // Redirect to login even if portfolio creation fails
-            router.push('/auth/login?message=Registration successful! Please sign in to complete setup.')
+            router.push(
+              '/auth/login?message=Registration successful! Please sign in to complete setup.'
+            )
           }
         } catch (portfolioError) {
           console.error('Failed to create default portfolio:', portfolioError)
           // Redirect to login even if portfolio creation fails
-          router.push('/auth/login?message=Registration successful! Please sign in to complete setup.')
+          router.push(
+            '/auth/login?message=Registration successful! Please sign in to complete setup.'
+          )
         }
       } else {
         // No session (email verification required), redirect to login
-        router.push('/auth/login?message=Registration successful! Please check your email to verify your account and then sign in.')
+        router.push(
+          '/auth/login?message=Registration successful! Please check your email to verify your account and then sign in.'
+        )
       }
     } catch {
       setError('An unexpected error occurred')
@@ -96,17 +107,23 @@ export default function Register() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/auth/login"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               sign in to your existing account
             </Link>
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   First Name
                 </label>
                 <input
@@ -116,11 +133,14 @@ export default function Register() {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="First Name"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={e => setFirstName(e.target.value)}
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Last Name
                 </label>
                 <input
@@ -130,13 +150,16 @@ export default function Register() {
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Last Name"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={e => setLastName(e.target.value)}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Username
               </label>
               <input
@@ -147,12 +170,15 @@ export default function Register() {
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={e => setUsername(e.target.value)}
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
@@ -164,12 +190,15 @@ export default function Register() {
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Email address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -180,12 +209,15 @@ export default function Register() {
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Password (min 6 characters)"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Confirm Password
               </label>
               <input
@@ -196,7 +228,7 @@ export default function Register() {
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Confirm password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={e => setConfirmPassword(e.target.value)}
               />
             </div>
           </div>
@@ -218,7 +250,10 @@ export default function Register() {
           </div>
 
           <div className="text-center">
-            <Link href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               ← Back to home
             </Link>
           </div>
@@ -226,4 +261,4 @@ export default function Register() {
       </div>
     </div>
   )
-} 
+}

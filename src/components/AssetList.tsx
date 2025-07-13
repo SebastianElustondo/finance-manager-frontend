@@ -15,9 +15,9 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
     try {
       setLoading(true)
       setError(null)
-      
+
       const response = await apiClient.getAssets(portfolioId)
-      
+
       if (response.success) {
         setAssets(response.data || [])
       } else {
@@ -37,10 +37,12 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
     }
   }, [portfolioId, fetchAssets])
 
-  const handleCreateAsset = async (assetData: Omit<Asset, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleCreateAsset = async (
+    assetData: Omit<Asset, 'id' | 'createdAt' | 'updatedAt'>
+  ) => {
     try {
       const response = await apiClient.createAsset(assetData)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAssets()
@@ -56,7 +58,7 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   const handleUpdateAsset = async (id: string, updates: Partial<Asset>) => {
     try {
       const response = await apiClient.updateAsset(id, updates)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAssets()
@@ -72,7 +74,7 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   const handleDeleteAsset = async (id: string) => {
     try {
       const response = await apiClient.deleteAsset(id)
-      
+
       if (response.success) {
         // Refresh the list
         fetchAssets()
@@ -93,7 +95,7 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
     return (
       <div className="text-center py-4 text-red-600">
         <p>Error: {error}</p>
-        <button 
+        <button
           onClick={fetchAssets}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
@@ -106,12 +108,12 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Portfolio Assets</h2>
-      
+
       {assets.length === 0 ? (
         <p className="text-gray-500">No assets found in this portfolio.</p>
       ) : (
         <div className="grid gap-4">
-          {assets.map((asset) => (
+          {assets.map(asset => (
             <div key={asset.id} className="border rounded-lg p-4 shadow-sm">
               <div className="flex justify-between items-start">
                 <div>
@@ -120,18 +122,32 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>Type: {asset.type}</p>
                     <p>Quantity: {asset.quantity}</p>
-                    <p>Purchase Price: {asset.currency} {asset.purchasePrice.toFixed(2)}</p>
-                    <p>Current Price: {asset.currency} {asset.currentPrice.toFixed(2)}</p>
-                    <p>P&L: {asset.currency} {((asset.currentPrice - asset.purchasePrice) * asset.quantity).toFixed(2)}</p>
+                    <p>
+                      Purchase Price: {asset.currency}{' '}
+                      {asset.purchasePrice.toFixed(2)}
+                    </p>
+                    <p>
+                      Current Price: {asset.currency}{' '}
+                      {asset.currentPrice.toFixed(2)}
+                    </p>
+                    <p>
+                      P&L: {asset.currency}{' '}
+                      {(
+                        (asset.currentPrice - asset.purchasePrice) *
+                        asset.quantity
+                      ).toFixed(2)}
+                    </p>
                     {asset.exchange && <p>Exchange: {asset.exchange}</p>}
                     {asset.notes && <p>Notes: {asset.notes}</p>}
                   </div>
                 </div>
                 <div className="space-x-2">
                   <button
-                    onClick={() => handleUpdateAsset(asset.id, { 
-                      currentPrice: asset.currentPrice * 1.1 // Simulate price update
-                    })}
+                    onClick={() =>
+                      handleUpdateAsset(asset.id, {
+                        currentPrice: asset.currentPrice * 1.1, // Simulate price update
+                      })
+                    }
                     className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
                   >
                     Update Price
@@ -148,21 +164,23 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
           ))}
         </div>
       )}
-      
+
       <button
-        onClick={() => handleCreateAsset({
-          portfolioId: portfolioId,
-          symbol: 'AAPL',
-          name: 'Apple Inc.',
-          type: AssetType.STOCK,
-          quantity: 10,
-          purchasePrice: 150.00,
-          currentPrice: 155.00,
-          purchaseDate: new Date().toISOString().split('T')[0],
-          exchange: 'NASDAQ',
-          currency: 'USD',
-          notes: 'Sample asset'
-        })}
+        onClick={() =>
+          handleCreateAsset({
+            portfolioId: portfolioId,
+            symbol: 'AAPL',
+            name: 'Apple Inc.',
+            type: AssetType.STOCK,
+            quantity: 10,
+            purchasePrice: 150.0,
+            currentPrice: 155.0,
+            purchaseDate: new Date().toISOString().split('T')[0],
+            exchange: 'NASDAQ',
+            currency: 'USD',
+            notes: 'Sample asset',
+          })
+        }
         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Add Sample Asset
@@ -171,4 +189,4 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   )
 }
 
-export default AssetList 
+export default AssetList

@@ -23,7 +23,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Auth helpers
 export const auth = {
-  signUp: async (email: string, password: string, userData?: UserRegistrationData) => {
+  signUp: async (
+    email: string,
+    password: string,
+    userData?: UserRegistrationData
+  ) => {
     return await supabase.auth.signUp({
       email,
       password,
@@ -52,7 +56,9 @@ export const auth = {
     return await supabase.auth.getUser()
   },
 
-  onAuthStateChange: (callback: (event: string, session: Session | null) => void) => {
+  onAuthStateChange: (
+    callback: (event: string, session: Session | null) => void
+  ) => {
     return supabase.auth.onAuthStateChange(callback)
   },
 }
@@ -60,4 +66,4 @@ export const auth = {
 // Database operations are now handled by the backend API
 // Use the apiClient from './api-client' for all database operations
 
-export default supabase 
+export default supabase

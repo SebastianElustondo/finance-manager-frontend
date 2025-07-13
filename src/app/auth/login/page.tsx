@@ -42,12 +42,15 @@ export default function Login() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/auth/register"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               create a new account
             </Link>
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -63,7 +66,7 @@ export default function Login() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -79,7 +82,7 @@ export default function Login() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -101,7 +104,10 @@ export default function Login() {
           </div>
 
           <div className="text-center">
-            <Link href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              href="/"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               ← Back to home
             </Link>
           </div>
@@ -109,4 +115,4 @@ export default function Login() {
       </div>
     </div>
   )
-} 
+}

@@ -195,8 +195,6 @@ export interface NotificationState {
   duration?: number
 }
 
-
-
 // Database row types (matching Supabase naming convention)
 export interface DatabasePortfolio {
   id: string
@@ -271,4 +269,4 @@ export interface ModalProps extends BaseComponentProps {
   onClose: () => void
   title?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
-} 
+}

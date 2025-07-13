@@ -150,7 +150,8 @@
 
 /* Custom animations */
 @keyframes pulse-gentle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -185,7 +186,9 @@
 .notification-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 300ms, transform 300ms;
+  transition:
+    opacity 300ms,
+    transform 300ms;
 }
 
 .notification-exit {
@@ -196,5 +199,7 @@
 .notification-exit-active {
   opacity: 0;
   transform: translateX(100%);
-  transition: opacity 300ms, transform 300ms;
-} 
+  transition:
+    opacity 300ms,
+    transform 300ms;
+}

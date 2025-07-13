@@ -20,15 +20,15 @@ export default function Dashboard() {
   const loadPortfolio = useCallback(async () => {
     try {
       // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise<never>((_, reject) => 
+      const timeoutPromise = new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('Portfolio loading timeout')), 10000)
       )
-      
+
       const response = await Promise.race([
         apiClient.getPortfolios(),
-        timeoutPromise
+        timeoutPromise,
       ])
-      
+
       if (response && 'success' in response && response.success) {
         const portfolios = response.data || []
         // Get the first (and should be only) portfolio
@@ -44,8 +44,10 @@ export default function Dashboard() {
 
   const checkUser = useCallback(async () => {
     try {
-      const { data: { user } } = await auth.getUser()
-      
+      const {
+        data: { user },
+      } = await auth.getUser()
+
       if (!user) {
         router.push('/auth/login')
         return
@@ -54,7 +56,8 @@ export default function Dashboard() {
       setUser({
         id: user.id,
         email: user.email || '',
-        username: user.user_metadata?.username || user.email?.split('@')[0] || '',
+        username:
+          user.user_metadata?.username || user.email?.split('@')[0] || '',
         firstName: user.user_metadata?.first_name,
         lastName: user.user_metadata?.last_name,
         avatarUrl: user.user_metadata?.avatar_url,
@@ -64,7 +67,7 @@ export default function Dashboard() {
 
       // Show dashboard immediately after user is loaded
       setInitialLoad(false)
-      
+
       // Load portfolio data
       await loadPortfolio()
     } catch {
@@ -118,7 +121,9 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Finance Manager</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Finance Manager
+              </h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
@@ -142,7 +147,7 @@ export default function Dashboard() {
             {[
               { id: 'portfolio', label: 'Portfolio' },
               { id: 'alerts', label: 'Alerts' },
-            ].map((tab) => (
+            ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -166,21 +171,29 @@ export default function Dashboard() {
             {/* Portfolio Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-medium text-gray-900">Portfolio Value</h3>
+                <h3 className="text-lg font-medium text-gray-900">
+                  Portfolio Value
+                </h3>
                 <p className="text-3xl font-bold text-indigo-600">
                   ${portfolio?.totalValue.toFixed(2) || '0.00'}
                 </p>
-                <p className="text-sm text-gray-500">{portfolio?.currency || 'USD'}</p>
+                <p className="text-sm text-gray-500">
+                  {portfolio?.currency || 'USD'}
+                </p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-medium text-gray-900">Active Alerts</h3>
+                <h3 className="text-lg font-medium text-gray-900">
+                  Active Alerts
+                </h3>
                 <p className="text-3xl font-bold text-blue-600">0</p>
                 <p className="text-sm text-gray-500">Price and volume alerts</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow">
                 <h3 className="text-lg font-medium text-gray-900">Assets</h3>
                 <p className="text-3xl font-bold text-green-600">0</p>
-                <p className="text-sm text-gray-500">Total assets in portfolio</p>
+                <p className="text-sm text-gray-500">
+                  Total assets in portfolio
+                </p>
               </div>
             </div>
 
@@ -196,13 +209,28 @@ export default function Dashboard() {
             ) : !portfolio ? (
               <div className="bg-white rounded-lg shadow p-6 text-center">
                 <div className="text-gray-400 mb-4">
-                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <svg
+                    className="w-12 h-12 mx-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Portfolio not found</h3>
-                <p className="text-gray-500 mb-4">Your portfolio should have been created automatically. Please try refreshing the page.</p>
-                <button 
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Portfolio not found
+                </h3>
+                <p className="text-gray-500 mb-4">
+                  Your portfolio should have been created automatically. Please
+                  try refreshing the page.
+                </p>
+                <button
                   onClick={() => window.location.reload()}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                 >
@@ -215,13 +243,21 @@ export default function Dashboard() {
                 <div className="bg-white rounded-lg shadow p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="text-lg font-medium text-gray-900">{portfolio.name}</h3>
-                      <p className="text-sm text-gray-600">{portfolio.description}</p>
+                      <h3 className="text-lg font-medium text-gray-900">
+                        {portfolio.name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {portfolio.description}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Total Value</p>
-                      <p className="text-2xl font-bold text-indigo-600">${portfolio.totalValue.toFixed(2)}</p>
-                      <p className="text-sm text-gray-500">{portfolio.currency}</p>
+                      <p className="text-2xl font-bold text-indigo-600">
+                        ${portfolio.totalValue.toFixed(2)}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {portfolio.currency}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -229,7 +265,9 @@ export default function Dashboard() {
                 {/* Assets Section */}
                 <div className="bg-white rounded-lg shadow p-6">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium text-gray-900">Assets</h3>
+                    <h3 className="text-lg font-medium text-gray-900">
+                      Assets
+                    </h3>
                     <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                       Add Asset
                     </button>
@@ -255,4 +293,4 @@ export default function Dashboard() {
       </main>
     </div>
   )
-} 
+}

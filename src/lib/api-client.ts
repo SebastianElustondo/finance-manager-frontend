@@ -1,12 +1,12 @@
 import { auth } from './supabase'
-import { 
-  Portfolio, 
-  Asset, 
-  Alert, 
-  PortfolioForm, 
-  AssetForm, 
+import {
+  Portfolio,
+  Asset,
+  Alert,
+  PortfolioForm,
+  AssetForm,
   AlertForm,
-  ApiResponse 
+  ApiResponse,
 } from '../types'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
@@ -29,7 +29,7 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const token = await this.getAuthToken()
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -128,8 +128,7 @@ class ApiClient {
       method: 'DELETE',
     })
   }
-
 }
 
 export const apiClient = new ApiClient()
-export default apiClient 
+export default apiClient

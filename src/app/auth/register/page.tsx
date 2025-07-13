@@ -80,7 +80,7 @@ export default function Register() {
         // No session (email verification required), redirect to login
         router.push('/auth/login?message=Registration successful! Please check your email to verify your account and then sign in.')
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)

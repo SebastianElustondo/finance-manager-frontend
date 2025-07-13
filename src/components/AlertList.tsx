@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { apiClient } from '../lib/api-client'
-
-interface Alert {
-  id: string
-  user_id: string
-  symbol: string
-  type: string
-  condition: number
-  is_active: boolean
-  is_triggered: boolean
-  message: string
-  created_at: string
-  updated_at: string
-  triggered_at?: string
-}
+import { Alert, AlertType } from '../types'
 
 export const AlertList: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([])
@@ -44,7 +31,7 @@ export const AlertList: React.FC = () => {
     }
   }
 
-  const handleCreateAlert = async (alertData: Omit<Alert, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'triggered_at'>) => {
+  const handleCreateAlert = async (alertData: Omit<Alert, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'triggeredAt'>) => {
     try {
       const response = await apiClient.createAlert(alertData)
       
@@ -93,7 +80,7 @@ export const AlertList: React.FC = () => {
   }
 
   const handleToggleAlert = async (id: string, isActive: boolean) => {
-    await handleUpdateAlert(id, { is_active: isActive })
+    await handleUpdateAlert(id, { isActive })
   }
 
   if (loading) {
@@ -131,22 +118,22 @@ export const AlertList: React.FC = () => {
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>Type: {alert.type}</p>
                     <p>Condition: {alert.condition}</p>
-                    <p>Status: {alert.is_triggered ? 'Triggered' : alert.is_active ? 'Active' : 'Inactive'}</p>
-                    {alert.triggered_at && (
-                      <p>Triggered at: {new Date(alert.triggered_at).toLocaleString()}</p>
+                    <p>Status: {alert.isTriggered ? 'Triggered' : alert.isActive ? 'Active' : 'Inactive'}</p>
+                    {alert.triggeredAt && (
+                      <p>Triggered at: {new Date(alert.triggeredAt).toLocaleString()}</p>
                     )}
                   </div>
                 </div>
                 <div className="space-x-2">
                   <button
-                    onClick={() => handleToggleAlert(alert.id, !alert.is_active)}
+                    onClick={() => handleToggleAlert(alert.id, !alert.isActive)}
                     className={`px-3 py-1 rounded text-sm ${
-                      alert.is_active 
+                      alert.isActive 
                         ? 'bg-yellow-500 text-white hover:bg-yellow-600' 
                         : 'bg-green-500 text-white hover:bg-green-600'
                     }`}
                   >
-                    {alert.is_active ? 'Deactivate' : 'Activate'}
+                    {alert.isActive ? 'Deactivate' : 'Activate'}
                   </button>
                   <button
                     onClick={() => handleDeleteAlert(alert.id)}
@@ -164,10 +151,10 @@ export const AlertList: React.FC = () => {
       <button
         onClick={() => handleCreateAlert({
           symbol: 'AAPL',
-          type: 'price_above',
+          type: AlertType.PRICE_ABOVE,
           condition: 200.00,
-          is_active: true,
-          is_triggered: false,
+          isActive: true,
+          isTriggered: false,
           message: 'AAPL price alert: above $200'
         })}
         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"

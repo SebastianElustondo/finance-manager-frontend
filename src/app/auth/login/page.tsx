@@ -26,7 +26,7 @@ export default function Login() {
       }
 
       router.push('/dashboard')
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)

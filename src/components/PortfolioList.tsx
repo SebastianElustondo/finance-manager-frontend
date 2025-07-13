@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { apiClient } from '../lib/api-client'
-
-interface Portfolio {
-  id: string
-  name: string
-  description: string
-  total_value: number
-  currency: string
-  created_at: string
-  updated_at: string
-}
+import { Portfolio } from '../types'
 
 export const PortfolioList: React.FC = () => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
@@ -40,7 +31,7 @@ export const PortfolioList: React.FC = () => {
     }
   }
 
-  const handleCreatePortfolio = async (portfolioData: Omit<Portfolio, 'id' | 'created_at' | 'updated_at'>) => {
+  const handleCreatePortfolio = async (portfolioData: Omit<Portfolio, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
     try {
       const response = await apiClient.createPortfolio(portfolioData)
       
@@ -121,7 +112,7 @@ export const PortfolioList: React.FC = () => {
                   <h3 className="text-lg font-semibold">{portfolio.name}</h3>
                   <p className="text-gray-600">{portfolio.description}</p>
                   <p className="text-sm text-gray-500">
-                    Value: {portfolio.currency} {portfolio.total_value.toFixed(2)}
+                    Value: {portfolio.currency} {portfolio.totalValue.toFixed(2)}
                   </p>
                 </div>
                 <div className="space-x-2">
@@ -148,8 +139,9 @@ export const PortfolioList: React.FC = () => {
         onClick={() => handleCreatePortfolio({
           name: 'New Portfolio',
           description: 'A new portfolio',
-          total_value: 0,
-          currency: 'USD'
+          totalValue: 0,
+          currency: 'USD',
+          isDefault: false
         })}
         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >

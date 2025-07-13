@@ -1,22 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { apiClient } from '../lib/api-client'
-
-interface Asset {
-  id: string
-  portfolio_id: string
-  symbol: string
-  name: string
-  type: string
-  quantity: number
-  purchase_price: number
-  current_price: number
-  purchase_date: string
-  exchange?: string
-  currency: string
-  notes?: string
-  created_at: string
-  updated_at: string
-}
+import { Asset, AssetType } from '../types'
 
 interface AssetListProps {
   portfolioId: string
@@ -27,13 +11,7 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (portfolioId) {
-      fetchAssets()
-    }
-  }, [portfolioId])
-
-  const fetchAssets = async () => {
+  const fetchAssets = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -51,9 +29,15 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [portfolioId, setLoading, setError, setAssets])
 
-  const handleCreateAsset = async (assetData: Omit<Asset, 'id' | 'created_at' | 'updated_at'>) => {
+  useEffect(() => {
+    if (portfolioId) {
+      fetchAssets()
+    }
+  }, [portfolioId, fetchAssets])
+
+  const handleCreateAsset = async (assetData: Omit<Asset, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
       const response = await apiClient.createAsset(assetData)
       
@@ -136,9 +120,9 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>Type: {asset.type}</p>
                     <p>Quantity: {asset.quantity}</p>
-                    <p>Purchase Price: {asset.currency} {asset.purchase_price.toFixed(2)}</p>
-                    <p>Current Price: {asset.currency} {asset.current_price.toFixed(2)}</p>
-                    <p>P&L: {asset.currency} {((asset.current_price - asset.purchase_price) * asset.quantity).toFixed(2)}</p>
+                    <p>Purchase Price: {asset.currency} {asset.purchasePrice.toFixed(2)}</p>
+                    <p>Current Price: {asset.currency} {asset.currentPrice.toFixed(2)}</p>
+                    <p>P&L: {asset.currency} {((asset.currentPrice - asset.purchasePrice) * asset.quantity).toFixed(2)}</p>
                     {asset.exchange && <p>Exchange: {asset.exchange}</p>}
                     {asset.notes && <p>Notes: {asset.notes}</p>}
                   </div>
@@ -146,7 +130,7 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
                 <div className="space-x-2">
                   <button
                     onClick={() => handleUpdateAsset(asset.id, { 
-                      current_price: asset.current_price * 1.1 // Simulate price update
+                      currentPrice: asset.currentPrice * 1.1 // Simulate price update
                     })}
                     className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
                   >
@@ -167,14 +151,14 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
       
       <button
         onClick={() => handleCreateAsset({
-          portfolio_id: portfolioId,
+          portfolioId: portfolioId,
           symbol: 'AAPL',
           name: 'Apple Inc.',
-          type: 'stock',
+          type: AssetType.STOCK,
           quantity: 10,
-          purchase_price: 150.00,
-          current_price: 155.00,
-          purchase_date: new Date().toISOString().split('T')[0],
+          purchasePrice: 150.00,
+          currentPrice: 155.00,
+          purchaseDate: new Date().toISOString().split('T')[0],
           exchange: 'NASDAQ',
           currency: 'USD',
           notes: 'Sample asset'

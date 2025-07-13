@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/supabase'
 import { apiClient } from '@/lib/api-client'
@@ -17,11 +17,32 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('portfolio')
   const router = useRouter()
 
-  useEffect(() => {
-    checkUser()
-  }, [])
+  const loadPortfolio = useCallback(async () => {
+    try {
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Portfolio loading timeout')), 10000)
+      )
+      
+      const response = await Promise.race([
+        apiClient.getPortfolios(),
+        timeoutPromise
+      ])
+      
+      if (response && 'success' in response && response.success) {
+        const portfolios = response.data || []
+        // Get the first (and should be only) portfolio
+        setPortfolio(portfolios.length > 0 ? portfolios[0] : null)
+      } else {
+        setPortfolio(null)
+      }
+    } catch (err) {
+      console.error('Failed to load portfolio:', err)
+      setPortfolio(null)
+    }
+  }, [setPortfolio])
 
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       const { data: { user } } = await auth.getUser()
       
@@ -46,38 +67,17 @@ export default function Dashboard() {
       
       // Load portfolio data
       await loadPortfolio()
-    } catch (err) {
+    } catch {
       setError('Failed to load user data')
       router.push('/auth/login')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, setUser, setInitialLoad, loadPortfolio, setError, setLoading])
 
-  const loadPortfolio = async () => {
-    try {
-      // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('Portfolio loading timeout')), 10000)
-      )
-      
-      const response = await Promise.race([
-        apiClient.getPortfolios(),
-        timeoutPromise
-      ])
-      
-      if (response && 'success' in response && response.success) {
-        const portfolios = response.data || []
-        // Get the first (and should be only) portfolio
-        setPortfolio(portfolios.length > 0 ? portfolios[0] : null)
-      } else {
-        setPortfolio(null)
-      }
-    } catch (err) {
-      console.error('Failed to load portfolio:', err)
-      setPortfolio(null)
-    }
-  }
+  useEffect(() => {
+    checkUser()
+  }, [checkUser])
 
   const handleSignOut = async () => {
     await auth.signOut()

@@ -1,14 +1,16 @@
 import { auth } from './supabase'
+import { 
+  Portfolio, 
+  Asset, 
+  Alert, 
+  PortfolioForm, 
+  AssetForm, 
+  AlertForm,
+  ApiResponse 
+} from '../types'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 const API_VERSION = 'v1'
-
-interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-}
 
 class ApiClient {
   private baseUrl: string
@@ -54,75 +56,75 @@ class ApiClient {
 
   // Portfolio operations
   async getPortfolios() {
-    return this.request<any[]>('/portfolio')
+    return this.request<Portfolio[]>('/portfolio')
   }
 
-  async createPortfolio(portfolio: any) {
-    return this.request<any>('/portfolio', {
+  async createPortfolio(portfolio: PortfolioForm) {
+    return this.request<Portfolio>('/portfolio', {
       method: 'POST',
       body: JSON.stringify(portfolio),
     })
   }
 
-  async updatePortfolio(id: string, updates: any) {
-    return this.request<any>(`/portfolio/${id}`, {
+  async updatePortfolio(id: string, updates: Partial<PortfolioForm>) {
+    return this.request<Portfolio>(`/portfolio/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
   }
 
   async deletePortfolio(id: string) {
-    return this.request<any>(`/portfolio/${id}`, {
+    return this.request<void>(`/portfolio/${id}`, {
       method: 'DELETE',
     })
   }
 
   // Asset operations
   async getAssets(portfolioId: string) {
-    return this.request<any[]>(`/assets?portfolioId=${portfolioId}`)
+    return this.request<Asset[]>(`/assets?portfolioId=${portfolioId}`)
   }
 
-  async createAsset(asset: any) {
-    return this.request<any>('/assets', {
+  async createAsset(asset: AssetForm) {
+    return this.request<Asset>('/assets', {
       method: 'POST',
       body: JSON.stringify(asset),
     })
   }
 
-  async updateAsset(id: string, updates: any) {
-    return this.request<any>(`/assets/${id}`, {
+  async updateAsset(id: string, updates: Partial<AssetForm>) {
+    return this.request<Asset>(`/assets/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
   }
 
   async deleteAsset(id: string) {
-    return this.request<any>(`/assets/${id}`, {
+    return this.request<void>(`/assets/${id}`, {
       method: 'DELETE',
     })
   }
 
   // Alert operations
   async getAlerts() {
-    return this.request<any[]>('/alerts')
+    return this.request<Alert[]>('/alerts')
   }
 
-  async createAlert(alert: any) {
-    return this.request<any>('/alerts', {
+  async createAlert(alert: AlertForm) {
+    return this.request<Alert>('/alerts', {
       method: 'POST',
       body: JSON.stringify(alert),
     })
   }
 
-  async updateAlert(id: string, updates: any) {
-    return this.request<any>(`/alerts/${id}`, {
+  async updateAlert(id: string, updates: Partial<AlertForm>) {
+    return this.request<Alert>(`/alerts/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
   }
 
   async deleteAlert(id: string) {
-    return this.request<any>(`/alerts/${id}`, {
+    return this.request<void>(`/alerts/${id}`, {
       method: 'DELETE',
     })
   }

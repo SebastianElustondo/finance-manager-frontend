@@ -1,7 +1,52 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChartBarIcon, CurrencyDollarIcon, BellIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { auth } from '@/lib/supabase'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 export default function Home() {
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    checkAuthState()
+  }, [])
+
+  const checkAuthState = async () => {
+    try {
+      const { data: { user } } = await auth.getUser()
+      setUser(user)
+    } catch (error) {
+      console.error('Error checking auth state:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    await auth.signOut()
+    setUser(null)
+  }
+
+  const goToDashboard = () => {
+    router.push('/dashboard')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Navigation */}
@@ -15,12 +60,34 @@ export default function Home() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/auth/login" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                  Sign In
-                </Link>
-                <Link href="/auth/register" className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
-                  Get Started
-                </Link>
+                {user ? (
+                  <>
+                    <span className="text-gray-700 px-3 py-2 text-sm">
+                      Welcome, {user.user_metadata?.first_name || user.email?.split('@')[0]}!
+                    </span>
+                    <button
+                      onClick={goToDashboard}
+                      className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium"
+                    >
+                      Go to Dashboard
+                    </button>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                      Sign In
+                    </Link>
+                    <Link href="/auth/register" className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
+                      Get Started
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -42,16 +109,29 @@ export default function Home() {
                   Get real-time updates, insights, and alerts to make informed investment decisions.
                 </p>
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link href="/auth/register" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
-                      Start tracking
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <Link href="/demo" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10">
-                      View Demo
-                    </Link>
-                  </div>
+                  {user ? (
+                    <div className="rounded-md shadow">
+                      <button
+                        onClick={goToDashboard}
+                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                      >
+                        View Your Dashboard
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="rounded-md shadow">
+                        <Link href="/auth/register" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
+                          Start tracking
+                        </Link>
+                      </div>
+                      <div className="mt-3 sm:mt-0 sm:ml-3">
+                        <Link href="/demo" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10">
+                          View Demo
+                        </Link>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </main>
@@ -144,9 +224,18 @@ export default function Home() {
           <p className="mt-4 text-lg leading-6 text-indigo-200">
             Join thousands of investors who trust Finance Manager to track their portfolios and make informed decisions.
           </p>
-          <Link href="/auth/register" className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto">
-            Get started for free
-          </Link>
+          {user ? (
+            <button
+              onClick={goToDashboard}
+              className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto"
+            >
+              Go to your dashboard
+            </button>
+          ) : (
+            <Link href="/auth/register" className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto">
+              Get started for free
+            </Link>
+          )}
         </div>
       </div>
 

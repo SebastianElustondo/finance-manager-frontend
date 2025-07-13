@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    appDir: true,
+    // appDir is now the default in Next.js 13+, no need to specify
   },
   images: {
     domains: ['localhost', 'supabase.co'],
@@ -45,11 +45,7 @@ const nextConfig = {
   // Redirects for better SEO
   async redirects() {
     return [
-      {
-        source: '/dashboard',
-        destination: '/dashboard/overview',
-        permanent: true,
-      },
+      // Removed redirect loop - dashboard page handles tabs internally
     ];
   },
   // Rewrites for API routes

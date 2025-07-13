@@ -100,7 +100,8 @@ export default function RootLayout({
           {children}
         </div>
         
-        {/* PWA Service Worker Registration */}
+        {/* PWA Service Worker Registration - Disabled for now */}
+        {/* 
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -118,6 +119,7 @@ export default function RootLayout({
             `,
           }}
         />
+        */}
       </body>
     </html>
   )

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/supabase'
 import { apiClient } from '@/lib/api-client'
 import { User, Portfolio } from '@/types'
-import { RealTimePriceTracker } from '@/components/RealTimePriceTracker'
 import { AssetList } from '@/components/AssetList'
 import { AlertList } from '@/components/AlertList'
 
@@ -15,7 +14,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [initialLoad, setInitialLoad] = useState(true)
   const [error, setError] = useState('')
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState('portfolio')
   const router = useRouter()
 
   useEffect(() => {
@@ -141,10 +140,8 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'portfolio', label: 'Your Portfolio' },
+              { id: 'portfolio', label: 'Portfolio' },
               { id: 'alerts', label: 'Alerts' },
-              { id: 'prices', label: 'Real-time Prices' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -164,8 +161,9 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'overview' && (
+        {activeTab === 'portfolio' && (
           <div className="space-y-6">
+            {/* Portfolio Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
                 <h3 className="text-lg font-medium text-gray-900">Portfolio Value</h3>
@@ -186,33 +184,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {portfolio && (
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Your Portfolio</h3>
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900">{portfolio.name}</h4>
-                  <p className="text-sm text-gray-600 mb-2">{portfolio.description}</p>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-sm text-gray-500">Total Value</p>
-                      <p className="text-xl font-bold text-indigo-600">${portfolio.totalValue.toFixed(2)}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">Currency</p>
-                      <p className="text-sm font-medium">{portfolio.currency}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'portfolio' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">Your Portfolio</h2>
-            </div>
+            {/* Portfolio Details */}
             {loading && !portfolio ? (
               <div className="bg-white rounded-lg shadow p-6 text-center">
                 <div className="animate-pulse">
@@ -254,7 +226,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Portfolio Assets */}
+                {/* Assets Section */}
                 <div className="bg-white rounded-lg shadow p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium text-gray-900">Assets</h3>
@@ -272,24 +244,12 @@ export default function Dashboard() {
         {activeTab === 'alerts' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">Price Alerts</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Alerts</h2>
               <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                 Create Alert
               </button>
             </div>
             <AlertList />
-          </div>
-        )}
-
-        {activeTab === 'prices' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">Real-time Prices</h2>
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Add Symbol
-              </button>
-            </div>
-            <RealTimePriceTracker symbols={['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'NVDA']} />
           </div>
         )}
       </main>

@@ -75,27 +75,6 @@ export interface Transaction {
   updatedAt: string
 }
 
-// Price data types
-export interface PriceData {
-  symbol: string
-  price: number
-  change: number
-  changePercent: number
-  volume: number
-  timestamp: string
-  source: string
-}
-
-export interface HistoricalPrice {
-  symbol: string
-  date: string
-  open: number
-  high: number
-  low: number
-  close: number
-  volume: number
-}
-
 // Alert types
 export enum AlertType {
   PRICE_ABOVE = 'price_above',
@@ -120,14 +99,14 @@ export interface Alert {
 }
 
 // API Response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   message?: string
   error?: string
 }
 
-export interface PaginatedResponse<T = any> {
+export interface PaginatedResponse<T = unknown> {
   data: T[]
   total: number
   page: number
@@ -216,23 +195,6 @@ export interface NotificationState {
   duration?: number
 }
 
-// WebSocket message types
-export interface WebSocketMessage {
-  type: string
-  data: any
-  timestamp: string
-}
-
-export interface PriceUpdateMessage extends WebSocketMessage {
-  type: 'price_update'
-  data: PriceData
-}
-
-export interface AlertMessage extends WebSocketMessage {
-  type: 'alert'
-  data: Alert
-}
-
 // Database row types (matching Supabase naming convention)
 export interface DatabasePortfolio {
   id: string
@@ -307,4 +269,4 @@ export interface ModalProps extends BaseComponentProps {
   onClose: () => void
   title?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
-} 
+}

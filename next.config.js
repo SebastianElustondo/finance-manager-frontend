@@ -21,19 +21,19 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
   // Webpack configuration for better performance
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: config => {
     // Add custom webpack configurations if needed
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       net: false,
       tls: false,
-    };
-    
-    return config;
+    }
+
+    return config
   },
   // Environment variables
   publicRuntimeConfig: {
@@ -46,7 +46,7 @@ const nextConfig = {
   async redirects() {
     return [
       // Removed redirect loop - dashboard page handles tabs internally
-    ];
+    ]
   },
   // Rewrites for API routes
   async rewrites() {
@@ -55,8 +55,8 @@ const nextConfig = {
         source: '/api/:path*',
         destination: 'http://localhost:3001/api/:path*',
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = nextConfig; 
+module.exports = nextConfig

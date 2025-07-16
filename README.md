@@ -53,12 +53,14 @@ src/
 ## Installation
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Set up environment variables:**
    Create a `.env.local` file in the root directory:
+
    ```
    NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
@@ -106,42 +108,49 @@ npm start
 ## Features Overview
 
 ### 🏠 Landing Page
+
 - Modern, responsive design
 - Feature highlights
 - Call-to-action sections
 - SEO optimized
 
 ### 🔐 Authentication
+
 - User registration and login
 - Email verification
 - Password reset
 - Protected routes
 
 ### 📊 Dashboard
+
 - Portfolio overview
 - Asset allocation charts
 - Performance analytics
 - Recent transactions
 
 ### 💼 Portfolio Management
+
 - Create and manage multiple portfolios
 - Add/edit/delete assets
 - Track different asset types (stocks, crypto, bonds, etc.)
 - Real-time price updates
 
 ### 📈 Analytics & Charts
+
 - Portfolio performance over time
 - Asset allocation pie charts
 - Profit/loss calculations
 - Historical price charts
 
 ### 🔔 Alerts & Notifications
+
 - Price alerts
 - Portfolio milestones
 - Push notifications (PWA)
 - Email notifications
 
 ### 📱 PWA Features
+
 - Offline capability
 - Desktop notifications
 - App-like experience
@@ -149,21 +158,23 @@ npm start
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | - |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | - |
-| `NEXT_PUBLIC_API_URL` | Backend API URL | http://localhost:3001 |
+| Variable                        | Description            | Default               |
+| ------------------------------- | ---------------------- | --------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL   | -                     |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | -                     |
+| `NEXT_PUBLIC_API_URL`           | Backend API URL        | http://localhost:3001 |
 
 ## Database Schema
 
 The frontend expects the following database tables:
 
 ### Users
+
 - Managed by Supabase Auth
 - Additional user metadata stored in auth.users
 
 ### Portfolios
+
 ```sql
 CREATE TABLE portfolios (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -179,6 +190,7 @@ CREATE TABLE portfolios (
 ```
 
 ### Assets
+
 ```sql
 CREATE TABLE assets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -199,6 +211,7 @@ CREATE TABLE assets (
 ```
 
 ### Alerts
+
 ```sql
 CREATE TABLE alerts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -218,12 +231,14 @@ CREATE TABLE alerts (
 ## PWA Configuration
 
 The app includes PWA support with:
+
 - Service worker for offline functionality
 - Web app manifest
 - Desktop installation
 - Push notifications
 
 ### Installing as PWA
+
 1. Visit the app in a supported browser
 2. Look for the "Install" prompt
 3. Click "Install" to add to desktop/homescreen
@@ -264,6 +279,7 @@ The app includes PWA support with:
 ## Deployment
 
 ### Vercel (Recommended)
+
 ```bash
 # Deploy to Vercel
 vercel deploy
@@ -272,6 +288,7 @@ vercel deploy
 ```
 
 ### Other Platforms
+
 - Netlify
 - AWS Amplify
 - Railway
@@ -298,4 +315,4 @@ vercel deploy
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.

@@ -1,4 +1,4 @@
-// User types Y FELIZ NAVIDAD aaaaaaaaaaaaaaaaaaaaa b
+// User types maidana de barrio
 export interface User {
   id: string
   email: string

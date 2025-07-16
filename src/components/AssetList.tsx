@@ -124,11 +124,11 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
                     <p>Quantity: {asset.quantity}</p>
                     <p>
                       Purchase Price: {asset.currency}{' '}
-                      {asset.purchasePrice.toFixed(2)}
+                      {asset.purchasePrice?.toFixed(2)}
                     </p>
                     <p>
                       Current Price: {asset.currency}{' '}
-                      {asset.currentPrice.toFixed(2)}
+                      {asset.currentPrice?.toFixed(2)}
                     </p>
                     <p>
                       P&L: {asset.currency}{' '}

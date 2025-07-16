@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { auth } from '@/lib/supabase'
-import { apiClient } from '@/lib/api-client'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -47,52 +46,26 @@ export default function Register() {
         return
       }
 
-      // If user was created successfully and we have a session, create a default portfolio
+      // Handle different registration scenarios
       if (data.user && data.session) {
-        try {
-          // Wait a moment for the session to be properly set
-          await new Promise(resolve => setTimeout(resolve, 1000))
-
-          const portfolioName = `${username || email.split('@')[0]}'s Portfolio`
-
-          // Create default portfolio
-          const portfolioResponse = await apiClient.createPortfolio({
-            name: portfolioName,
-            description: 'Your main investment portfolio',
-            currency: 'USD',
-            isDefault: true,
-          })
-
-          if (portfolioResponse.success) {
-            // Portfolio created successfully, redirect to dashboard
-            router.push(
-              '/dashboard?message=Registration successful! Welcome to your Finance Manager.'
-            )
-          } else {
-            console.error(
-              'Failed to create default portfolio:',
-              portfolioResponse.error
-            )
-            // Redirect to login even if portfolio creation fails
-            router.push(
-              '/auth/login?message=Registration successful! Please sign in to complete setup.'
-            )
-          }
-        } catch (portfolioError) {
-          console.error('Failed to create default portfolio:', portfolioError)
-          // Redirect to login even if portfolio creation fails
-          router.push(
-            '/auth/login?message=Registration successful! Please sign in to complete setup.'
-          )
-        }
-      } else {
-        // No session (email verification required), redirect to login
+        // User was created and signed in immediately (no email verification required)
+        router.push(
+          '/dashboard?message=Registration successful! Welcome to Finance Manager.'
+        )
+      } else if (data.user && !data.session) {
+        // User was created but needs to verify email
         router.push(
           '/auth/login?message=Registration successful! Please check your email to verify your account and then sign in.'
         )
+      } else {
+        // Fallback case
+        router.push(
+          '/auth/login?message=Registration completed! Please sign in.'
+        )
       }
-    } catch {
-      setError('An unexpected error occurred')
+    } catch (err) {
+      console.error('Registration error:', err)
+      setError('An unexpected error occurred during registration')
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,4 @@
-// User types
+// User types maidana de barrio
 export interface User {
   id: string
   email: string

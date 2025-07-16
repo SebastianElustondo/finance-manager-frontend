@@ -82,7 +82,7 @@ export default function Dashboard() {
       setCreatingPortfolio(false)
     }
   }
-  //
+  //prueba
 
   const loadPortfolioAndAutoCreate = useCallback(async () => {
     if (!user) return

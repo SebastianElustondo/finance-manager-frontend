@@ -106,6 +106,27 @@ export interface ApiResponse<T = unknown> {
   error?: string
 }
 
+// Enhanced API response types that include both created item and full list
+export interface PortfolioCreateResponse {
+  created: Portfolio
+  portfolios: Portfolio[]
+}
+
+export interface AssetCreateResponse {
+  created: Asset
+  assets: Asset[]
+}
+
+export interface AlertCreateResponse {
+  created: Alert
+  alerts: Alert[]
+}
+
+// Union types for API responses that can be either single item or enhanced response
+export type PortfolioApiData = Portfolio | PortfolioCreateResponse
+export type AssetApiData = Asset | AssetCreateResponse
+export type AlertApiData = Alert | AlertCreateResponse
+
 export interface PaginatedResponse<T = unknown> {
   data: T[]
   total: number

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { apiClient } from '../lib/api-client'
-import { Alert, AlertType } from '../types'
+import { Alert, AlertType, AlertCreateResponse } from '../types'
 
 export const AlertList: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([])
@@ -40,9 +40,17 @@ export const AlertList: React.FC = () => {
     try {
       const response = await apiClient.createAlert(alertData)
 
-      if (response.success) {
-        // Refresh the list
-        fetchAlerts()
+      if (response.success && response.data) {
+        if (
+          typeof response.data === 'object' &&
+          response.data !== null &&
+          'alerts' in response.data
+        ) {
+          const responseData = response.data as unknown as AlertCreateResponse
+          setAlerts(responseData.alerts)
+        } else {
+          setAlerts([response.data as Alert])
+        }
       } else {
         setError(response.error || 'Failed to create alert')
       }
@@ -57,7 +65,6 @@ export const AlertList: React.FC = () => {
       const response = await apiClient.updateAlert(id, updates)
 
       if (response.success) {
-        // Refresh the list
         fetchAlerts()
       } else {
         setError(response.error || 'Failed to update alert')
@@ -73,7 +80,6 @@ export const AlertList: React.FC = () => {
       const response = await apiClient.deleteAlert(id)
 
       if (response.success) {
-        // Refresh the list
         fetchAlerts()
       } else {
         setError(response.error || 'Failed to delete alert')

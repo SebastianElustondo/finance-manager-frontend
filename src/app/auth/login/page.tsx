@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { auth } from '@/lib/supabase'
 
-export default function Login() {
+function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -14,13 +14,11 @@ export default function Login() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Handle URL parameters on component mount
   useEffect(() => {
     const urlMessage = searchParams.get('message')
 
     if (urlMessage) {
       setMessage(urlMessage)
-      // Clear URL parameters
       const newUrl = window.location.pathname
       window.history.replaceState({}, '', newUrl)
     }
@@ -176,5 +174,22 @@ export default function Login() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading login page...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   )
 }

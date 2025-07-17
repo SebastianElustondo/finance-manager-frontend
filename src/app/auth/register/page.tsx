@@ -21,7 +21,6 @@ export default function Register() {
     setLoading(true)
     setError('')
 
-    // Validation
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       setLoading(false)
@@ -46,19 +45,15 @@ export default function Register() {
         return
       }
 
-      // Handle different registration scenarios
       if (data.user && data.session) {
-        // User was created and signed in immediately (no email verification required)
         router.push(
           '/dashboard?message=Registration successful! Welcome to Finance Manager.'
         )
       } else if (data.user && !data.session) {
-        // User was created but needs to verify email
         router.push(
           '/auth/login?message=Registration successful! Please check your email to verify your account and then sign in.'
         )
       } else {
-        // Fallback case
         router.push(
           '/auth/login?message=Registration completed! Please sign in.'
         )

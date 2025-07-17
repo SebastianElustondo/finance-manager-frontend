@@ -69,8 +69,6 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-  // feature:
-  // fix:
 }) {
   return (
     <html lang="en" suppressHydrationWarning>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { apiClient } from '../lib/api-client'
-import { Portfolio } from '../types'
+import { Portfolio, PortfolioCreateResponse } from '../types'
 
 export const PortfolioList: React.FC = () => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
@@ -37,9 +37,18 @@ export const PortfolioList: React.FC = () => {
     try {
       const response = await apiClient.createPortfolio(portfolioData)
 
-      if (response.success) {
-        // Refresh the list
-        fetchPortfolios()
+      if (response.success && response.data) {
+        if (
+          typeof response.data === 'object' &&
+          response.data !== null &&
+          'portfolios' in response.data
+        ) {
+          const responseData =
+            response.data as unknown as PortfolioCreateResponse
+          setPortfolios(responseData.portfolios)
+        } else {
+          setPortfolios([response.data as Portfolio])
+        }
       } else {
         setError(response.error || 'Failed to create portfolio')
       }
@@ -57,7 +66,6 @@ export const PortfolioList: React.FC = () => {
       const response = await apiClient.updatePortfolio(id, updates)
 
       if (response.success) {
-        // Refresh the list
         fetchPortfolios()
       } else {
         setError(response.error || 'Failed to update portfolio')
@@ -73,7 +81,6 @@ export const PortfolioList: React.FC = () => {
       const response = await apiClient.deletePortfolio(id)
 
       if (response.success) {
-        // Refresh the list
         fetchPortfolios()
       } else {
         setError(response.error || 'Failed to delete portfolio')

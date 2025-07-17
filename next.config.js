@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // appDir is now the default in Next.js 13+, no need to specify
-  },
+  reactStrictMode: process.env.NODE_ENV === 'production',
+  experimental: {},
   images: {
     domains: ['localhost', 'supabase.co'],
   },
   env: {
     CUSTOM_KEY: 'finance-manager',
   },
-  // PWA configuration
   async headers() {
     return [
       {
@@ -23,9 +21,7 @@ const nextConfig = {
       },
     ]
   },
-  // Webpack configuration for better performance
   webpack: config => {
-    // Add custom webpack configurations if needed
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -35,20 +31,13 @@ const nextConfig = {
 
     return config
   },
-  // Environment variables
   publicRuntimeConfig: {
     NODE_ENV: process.env.NODE_ENV,
   },
-  serverRuntimeConfig: {
-    // Will only be available on the server side
-  },
-  // Redirects for better SEO
+  serverRuntimeConfig: {},
   async redirects() {
-    return [
-      // Removed redirect loop - dashboard page handles tabs internally
-    ]
+    return []
   },
-  // Rewrites for API routes
   async rewrites() {
     return [
       {

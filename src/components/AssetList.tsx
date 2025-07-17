@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { apiClient } from '../lib/api-client'
-import { Asset, AssetType } from '../types'
+import { Asset, AssetType, AssetCreateResponse } from '../types'
 
 interface AssetListProps {
   portfolioId: string
@@ -10,13 +10,18 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
   const [assets, setAssets] = useState<Asset[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const mountedRef = useRef(true)
 
   const fetchAssets = useCallback(async () => {
+    if (!mountedRef.current) return
+
     try {
       setLoading(true)
       setError(null)
 
       const response = await apiClient.getAssets(portfolioId)
+
+      if (!mountedRef.current) return
 
       if (response.success) {
         setAssets(response.data || [])
@@ -24,16 +29,24 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
         setError(response.error || 'Failed to fetch assets')
       }
     } catch (err) {
+      if (!mountedRef.current) return
       setError('Failed to fetch assets')
       console.error('Error fetching assets:', err)
     } finally {
-      setLoading(false)
+      if (mountedRef.current) {
+        setLoading(false)
+      }
     }
-  }, [portfolioId, setLoading, setError, setAssets])
+  }, [portfolioId])
 
   useEffect(() => {
+    mountedRef.current = true
     if (portfolioId) {
       fetchAssets()
+    }
+
+    return () => {
+      mountedRef.current = false
     }
   }, [portfolioId, fetchAssets])
 
@@ -43,9 +56,17 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
     try {
       const response = await apiClient.createAsset(assetData)
 
-      if (response.success) {
-        // Refresh the list
-        fetchAssets()
+      if (response.success && response.data) {
+        if (
+          typeof response.data === 'object' &&
+          response.data !== null &&
+          'assets' in response.data
+        ) {
+          const responseData = response.data as unknown as AssetCreateResponse
+          setAssets(responseData.assets)
+        } else {
+          setAssets([response.data as Asset])
+        }
       } else {
         setError(response.error || 'Failed to create asset')
       }
@@ -60,7 +81,6 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
       const response = await apiClient.updateAsset(id, updates)
 
       if (response.success) {
-        // Refresh the list
         fetchAssets()
       } else {
         setError(response.error || 'Failed to update asset')
@@ -76,7 +96,6 @@ export const AssetList: React.FC<AssetListProps> = ({ portfolioId }) => {
       const response = await apiClient.deleteAsset(id)
 
       if (response.success) {
-        // Refresh the list
         fetchAssets()
       } else {
         setError(response.error || 'Failed to delete asset')
